@@ -1,0 +1,27 @@
+{
+    "name": "hostlink/f",
+    "description": "raymond frontend system",
+    "autoload": {
+        "psr-4": {
+            "F\\": "F/"
+        },
+        "classmap": [
+            "/"
+        ]
+    },
+    "require": {
+        "php": ">=5.4",
+        "hostlink/r": "1.*",
+        "twig/twig": "*",
+        "twig/extensions": "*"
+    },
+    "type": "library",
+    "license": "proprietary",
+    "minimum-stability": "stable",
+    "version": "1.3.0",
+    "authors": [
+        {
+            "name": "Raymond Chong"
+        }
+    ]
+}
