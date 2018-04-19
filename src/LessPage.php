@@ -3,11 +3,14 @@ namespace F;
 
 class LessPage extends \R\Page
 {
-    public function get()
+    public function get($sourceMap)
     {
         $route = $this->request->getAttribute("route");
 
-        $parser = new \Less_Parser();
+        $options = [
+            "sourceMap" => $sourceMap
+        ];
+        $parser = new \Less_Parser($options);
         foreach (glob(dirname($route->file) . "/*.less") as $f) {
             $parser->parseFile($f);
         }

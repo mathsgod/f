@@ -1,27 +1,35 @@
 {
+    "repositories": {
+        "hostlink-raymond": {
+            "type": "composer",
+            "url": "https://raymond2.hostlink.com.hk/bitbucket/repo"
+        }
+    },
     "name": "hostlink/f",
     "description": "raymond frontend system",
     "autoload": {
         "psr-4": {
-            "F\\": "F/"
-        },
-        "classmap": [
-            "/"
-        ]
+            "F\\": "src/"
+        }
     },
     "require": {
         "php": ">=5.4",
-        "hostlink/r": "1.*",
+        "hostlink/r": "2.*",
         "twig/twig": "*",
         "twig/extensions": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*",
+        "oyejorge/less.php": "*"
     },
     "type": "library",
     "license": "proprietary",
     "minimum-stability": "stable",
     "suggest": {
-        "oyejorge/less.php":"~1.7.0.9"
+        "hostlink/r-db": "*",
+        "oyejorge/less.php": "*"
     },
-    "version": "1.4.0",
+    "version": "2.0.0",
     "authors": [
         {
             "name": "Raymond Chong",

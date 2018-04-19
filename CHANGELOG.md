@@ -1,3 +1,9 @@
+## 1.5.1
+- source map support
+
+theme?sourceMap=1
+
+
 ## 1.4.0
 - Less php support (sugguest by norris)
     

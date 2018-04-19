@@ -39,7 +39,7 @@ class Page extends \R\Page
         
         if (file_exists($file = $root."/".$pi["filename"].".master.php")) {
             require_once($file);
-            System::Loader()->addClassMap(["index_master"=>$file]);
+            $this->app->loader->addClassMap(["index_master"=>$file]);
             return [
             "file"=>$file,
             "class"=>"index_master"
@@ -48,16 +48,16 @@ class Page extends \R\Page
         
         if (file_exists($file = $this->root."/pages/index.master.php")) {
             require_once($file);
-            System::Loader()->addClassMap(["index_master"=>$file]);
+            $this->app->loader->addClassMap(["index_master"=>$file]);
             return [
             "file"=>$file,
             "class"=>"index_master"];
         }
         
 
-        if (System::Loader()->loadClass("index.master")) {
+        if ($this->app->loader->loadClass("index.master")) {
             return [
-                "file"=>System::Loader()->findFile("index.master"),
+                "file"=>$this->app->loader->findFile("index.master"),
                 "class"=>"index_master"];
         }
         
@@ -96,7 +96,7 @@ class Page extends \R\Page
         
         if ($master) {
             $master_class=$master["class"];
-            $this->master=new $master_class();
+            $this->master=new $master_class($this->app);
             $this->master->file=$master["file"];
             return $this->master;
         }
@@ -109,11 +109,11 @@ class Page extends \R\Page
                 return $this->template;
             }
             
-            $file=realpath(System::Loader()->findFile(get_class($this)));
+            $file=realpath($this->app->loader->findFile(get_class($this)));
             $pi=pathinfo($file);
         }
 
-        $this->template=System::FindTemplate($file);
+        $this->template=$this->app->findTemplate($file);
         return $this->template;
     }
 

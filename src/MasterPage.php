@@ -12,6 +12,12 @@ class MasterPage
     public $config = [];
     public $template_file;
     public $template_base;
+    public $app;
+
+    public function __construct(App $app)
+    {
+        $this->app = $app;
+    }
 
     public function assign($name, $value)
     {
@@ -31,7 +37,7 @@ class MasterPage
 
     public function getTextDomain()
     {
-        $_lang=setlocale(LC_ALL, 0);
+        $_lang = setlocale(LC_ALL, 0);
         $fi = preg_replace('/.[^.]*$/', '', basename($this->file));
         $mo = glob(getcwd() . "/locale/{$_lang}/LC_MESSAGES/{$fi}-*.mo")[0];
 
@@ -42,21 +48,21 @@ class MasterPage
         }
         return uniqid();
     }
-    
+
     public function template()
     {
         return $this->_template;
     }
-    
+
     public function __invoke($request, $response)
     {
         $this->data["base"] = $request->getURI()->getBasePath();
         // read lang
-        $lang = \F::Lang();
+        $lang = $this->app->current_language;
         $this->data["lang"] = $lang;
 
         //file template
-        $this->_template=System::FindTemplate($this->file);
+        $this->_template = $this->app->findTemplate($this->file);
 
         if ($this->_template instanceof \Twig_Template) {
             if ($domain = $this->getTextDomain()) {
@@ -69,10 +75,10 @@ class MasterPage
 
         if ($this->master) {
             $this->master->assign("content", $content);
-            
+
             return $this->master($request, $response);
         }
-        
+
         return $response->withBody(new Stream($content));
     }
 }
