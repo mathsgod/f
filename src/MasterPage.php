@@ -2,6 +2,7 @@
 namespace F;
 
 use R\Psr7\Stream;
+use Exception;
 
 class MasterPage
 {
@@ -16,6 +17,7 @@ class MasterPage
 
     public function __construct(App $app)
     {
+        if (!$app) new Exception('App not found');
         $this->app = $app;
     }
 
@@ -23,7 +25,6 @@ class MasterPage
     {
         $this->data[$name] = $value;
     }
-
 
     public function setMasterPage(MasterPage $mp)
     {

@@ -15,9 +15,8 @@ class Page extends \R\Page
     {
         if ($uri) {
             if ($uri[0]=="/") {
-                $f=System::$f;
-                if (\F::Lang()!=$f->language[0]) {
-                    $uri="/".\F::Lang().$uri;
+                if ($this->app->current_language!=$f->language[0]) {
+                    $uri="/".$this->app->current_language.$uri;
                 }
             }
             if ($params) {
@@ -188,5 +187,28 @@ class Page extends \R\Page
         
                 
         return $response;
+    }
+
+    public function id(){
+        $path= $this->request->getUri()->getPath();
+
+        foreach(explode("/",$path) as $p){
+            if(is_numeric($p)){
+                return $p;
+            }
+        }
+        return null;
+    }
+
+    public function ids(){
+        $result=[];
+        $path= $this->request->getUri()->getPath();
+
+        foreach(explode("/",$path) as $p){
+            if(is_numeric($p)){
+                $result[]= $p;
+            }
+        }
+        return $result;
     }
 }
