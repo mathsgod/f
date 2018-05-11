@@ -1,6 +1,9 @@
 <?
 namespace F;
 
+use R\Psr7\ServerRequest;
+use R\Psr7\Response;
+
 class App extends \R\App
 {
     public $language = [];
@@ -93,10 +96,15 @@ class App extends \R\App
         return $this->request("GET", $uri);
     }
 
+    public function serverRequest()
+    {
+        return ServerRequest::FromEnv();
+    }
+
     public function request($method, $uri)
     {
         $url = parse_url($uri);
-        $request = static::ServerRequest();
+        $request = $this->serverRequest();
 
         $u = $request->getURI()->withPath($url["path"]);
 
@@ -108,12 +116,12 @@ class App extends \R\App
 
         $r = $request->withUri($u)->withMethod($method);
 
-        $router = static::Router();
+        $router = $this->router;
 
-        $route = $router->getRoute($r, System::Loader());
+        $route = $router->getRoute($r, $this->loader);
 
         if ($class = $route->class) {
-            $page = new $class;
+            $page = new $class($this);
             return $page($request, new Response(200));
         }
 
@@ -150,37 +158,4 @@ class App extends \R\App
 
         exit();
     }
-
-  
-
-/*    public static function URI()
-    {
-        $f = F\System::$f;
-        list($prefix, $lang, $path) = explode("/", $_SERVER["REQUEST_URI"], 3);
-        if (in_array($lang, $f->language)) {
-            if ($path[0] != "/") {
-                $path = "/" . $path;
-            }
-            return new R\PURL($path);
-        } else {
-            $uri = $_SERVER["REQUEST_URI"];
-            if ($uri == "") {
-                $uri = "/";
-            }
-            return new R\PURL($uri);
-        }
-    }
-
-    public static function ID()
-    {
-        $uri = $_SERVER["REQUEST_URI"];
-        foreach (explode("/", $uri) as $i) {
-            if (is_numeric($i)) {
-                return $i;
-            }
-        }
-        return null;
-    }*/
-
-
 }

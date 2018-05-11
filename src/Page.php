@@ -6,64 +6,68 @@ use R\Psr7\Stream;
 
 class Page extends \R\Page
 {
-
     public $master;
     public $template;
     public $data = [];
 
+    public function __construct(App $app)
+    {
+        parent::__construct($app);
+    }
+
     public function _redirect($uri, $params)
     {
         if ($uri) {
-            if ($uri[0]=="/") {
-                if ($this->app->current_language!=$f->language[0]) {
-                    $uri="/".$this->app->current_language.$uri;
+            if ($uri[0] == "/") {
+                if ($this->app->current_language != $f->language[0]) {
+                    $uri = "/" . $this->app->current_language . $uri;
                 }
             }
             if ($params) {
-                $uri.="?".http_build_query($params);
+                $uri .= "?" . http_build_query($params);
             }
-            $this->response=$this->response->withHeader("Location", $uri);
+            $this->response = $this->response->withHeader("Location", $uri);
             return;
         }
-        $header=$this->request->getHeader("Referer");
-        if ($h=$header[0]) {
-            $this->response=$this->response->withHeader("Location", $h);
+        $header = $this->request->getHeader("Referer");
+        if ($h = $header[0]) {
+            $this->response = $this->response->withHeader("Location", $h);
         }
     }
 
     private function findMasterClass()
     {
-        $pi=pathinfo($this->file);
-        $root=$this->root;
-        
-        if (file_exists($file = $root."/".$pi["filename"].".master.php")) {
-            require_once($file);
-            $this->app->loader->addClassMap(["index_master"=>$file]);
+        $pi = pathinfo($this->file);
+        $root = $this->root;
+
+        if (file_exists($file = $root . "/" . $pi["filename"] . ".master.php")) {
+            $this->app->loader->addClassMap(["_index_master" => $file]);
             return [
-            "file"=>$file,
-            "class"=>"index_master"
+                "file" => $file,
+                "class" => "_index_master"
             ];
         }
-        
-        if (file_exists($file = $this->root."/pages/index.master.php")) {
-            require_once($file);
-            $this->app->loader->addClassMap(["index_master"=>$file]);
+
+        if (file_exists($file = $root . "/pages/index.master.php")) {
+            $this->app->loader->addClassMap(["_index_master" => $file]);
             return [
-            "file"=>$file,
-            "class"=>"index_master"];
+                "file" => $file,
+                "class" => "_index_master"
+            ];
         }
-        
+
 
         if ($this->app->loader->loadClass("index.master")) {
             return [
-                "file"=>$this->app->loader->findFile("index.master"),
-                "class"=>"index_master"];
+                "file" => $this->app->loader->findFile("index.master"),
+                "class" => "_index_master"
+            ];
         }
-        
+
 
         $route = $this->route;
-        
-        $path = substr($route->real_path, 0, - 4);
+
+        $path = substr($route->real_path, 0, -4);
         if (is_readable($path . ".master.php")) {
             return $path . ".master.php";
         }
@@ -92,11 +96,11 @@ class Page extends \R\Page
 
         // check to route
         $master = $this->findMasterClass();
-        
+
         if ($master) {
-            $master_class=$master["class"];
-            $this->master=new $master_class($this->app);
-            $this->master->file=$master["file"];
+            $master_class = $master["class"];
+            $this->master = new $master_class($this->app);
+            $this->master->file = $master["file"];
             return $this->master;
         }
     }
@@ -107,12 +111,12 @@ class Page extends \R\Page
             if ($this->template) {
                 return $this->template;
             }
-            
-            $file=realpath($this->app->loader->findFile(get_class($this)));
-            $pi=pathinfo($file);
+
+            $file = realpath($this->app->loader->findFile(get_class($this)));
+            $pi = pathinfo($file);
         }
 
-        $this->template=$this->app->findTemplate($file);
+        $this->template = $this->app->findTemplate($file);
         return $this->template;
     }
 
@@ -123,7 +127,7 @@ class Page extends \R\Page
 
     protected function getTextDomain()
     {
-        $_lang=setlocale(LC_ALL, 0);
+        $_lang = setlocale(LC_ALL, 0);
         $fi = preg_replace('/.[^.]*$/', '', basename($this->file));
         $mo = glob(getcwd() . "/locale/{$_lang}/LC_MESSAGES/{$fi}-*.mo")[0];
 
@@ -137,31 +141,32 @@ class Page extends \R\Page
 
     public function __invoke($request, $response)
     {
-        $this->request=$request;
-        
-        ob_start();
-        $response=parent::__invoke($request, $response);
-        $echo_content = ob_get_contents();
-        ob_end_clean();
+        $this->request = $request;
 
-        $method=strtolower($this->request->getMethod());
-        if ($method=="get" && ($request->isAccept("text/html")||$request->isAccept("*/*"))) {
+        $method = strtolower($this->request->getMethod());
+        if ($method == "get" && ($request->isAccept("text/html") || $request->isAccept("*/*"))) {
             $this->master();
             $this->template();
         }
 
+        ob_start();
+        $response = parent::__invoke($request, $response);
+        $echo_content = ob_get_contents();
+        ob_end_clean();
+
+
         //check template
-        if ($template=$this->template) {
+        if ($template = $this->template) {
             if ($domain = $this->getTextDomain()) {
                 bindtextdomain($domain, getcwd() . "/locale");
                 textdomain($domain);
             }
-        
-            $this->data["app"]["request"]=$request;
-                        
-            $ret=$response->getBody()->getContents();
+
+            $this->data["app"]["request"] = $request;
+
+            $ret = $response->getBody()->getContents();
             if (is_array($ret)) {
-                $this->data=array_merge($this->data, $ret);
+                $this->data = array_merge($this->data, $ret);
             }
             try {
                 $content .= $template->render($this->data);
@@ -170,43 +175,45 @@ class Page extends \R\Page
             }
             $response->setHeader("Content-Type", "text/html; charset=UTF-8");
         } else {
-            $content=(string)$response;
+            $content = (string)$response;
         }
-        
+
         $content = $echo_content . $content;
-        
-        if ($master=$this->master) {
+
+        if ($master = $this->master) {
             $response->setHeader("Content-Type", "text/html; charset=UTF-8");
             $master->assign("content", $content);
-            $response=$master->__invoke($request, $response);
+            $response = $master->__invoke($request, $response);
         } else {
-            $stream=new Stream();
+            $stream = new Stream();
             $stream->write($content);
-            $response=$response->withBody($stream);
+            $response = $response->withBody($stream);
         }
-        
-                
+
+
         return $response;
     }
 
-    public function id(){
-        $path= $this->request->getUri()->getPath();
+    public function id()
+    {
+        $path = $this->request->getUri()->getPath();
 
-        foreach(explode("/",$path) as $p){
-            if(is_numeric($p)){
+        foreach (explode("/", $path) as $p) {
+            if (is_numeric($p)) {
                 return $p;
             }
         }
         return null;
     }
 
-    public function ids(){
-        $result=[];
-        $path= $this->request->getUri()->getPath();
+    public function ids()
+    {
+        $result = [];
+        $path = $this->request->getUri()->getPath();
 
-        foreach(explode("/",$path) as $p){
-            if(is_numeric($p)){
-                $result[]= $p;
+        foreach (explode("/", $path) as $p) {
+            if (is_numeric($p)) {
+                $result[] = $p;
             }
         }
         return $result;
