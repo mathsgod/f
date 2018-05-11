@@ -3,6 +3,7 @@ namespace F;
 
 use R\Psr7\Response;
 use R\Psr7\Stream;
+use Exception;
 
 class Page extends \R\Page
 {
@@ -13,6 +14,11 @@ class Page extends \R\Page
     public function __construct(App $app)
     {
         parent::__construct($app);
+    }
+
+    public function redirect($uri, $params)
+    {
+        return $this->_redirect($uri, $params);
     }
 
     public function _redirect($uri, $params)
@@ -150,10 +156,24 @@ class Page extends \R\Page
         }
 
         ob_start();
-        $response = parent::__invoke($request, $response);
+        try {
+            $response = parent::__invoke($request, $response);
+        } catch (Exception $e) {
+            if ($request->getHeader("Accept")[0] == "application/json") {
+                $response = $response->withHeader("Content-Type", "application/json; charset=UTF-8");
+                if ($e->getCode()) {
+                    $ret = ["code" => $e->getCode(), "message" => $e->getMessage()];
+                } else {
+                    $ret = ["message" => $e->getMessage()];
+                }
+                return $response->withBody(new Stream(json_encode($ret)));
+            } else {
+                $response = $response->withHeader("Content-Type", "text/html; charset=UTF-8")
+                    ->withBody(new Stream($e->getMessage()));
+            }
+        }
         $echo_content = ob_get_contents();
         ob_end_clean();
-
 
         //check template
         if ($template = $this->template) {
@@ -180,16 +200,21 @@ class Page extends \R\Page
 
         $content = $echo_content . $content;
 
-        if ($master = $this->master) {
-            $response->setHeader("Content-Type", "text/html; charset=UTF-8");
-            $master->assign("content", $content);
-            $response = $master->__invoke($request, $response);
-        } else {
+        if ($request->getHeader("Accept")[0] == "application/json") {
             $stream = new Stream();
             $stream->write($content);
             $response = $response->withBody($stream);
+        } else {
+            if ($master = $this->master) {
+                $response->setHeader("Content-Type", "text/html; charset=UTF-8");
+                $master->assign("content", $content);
+                $response = $master->__invoke($request, $response);
+            } else {
+                $stream = new Stream();
+                $stream->write($content);
+                $response = $response->withBody($stream);
+            }
         }
-
 
         return $response;
     }
