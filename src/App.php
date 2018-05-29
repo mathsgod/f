@@ -27,8 +27,10 @@ class App extends \R\App
         $path = array_values(array_filter($path, strlen));
         if (in_array($path[0], $this->language)) {
             $this->current_language = array_shift($path);
-            $uri = $uri->withPath(implode("/", $path));
+            $uri = $uri->withPath("/".implode("/", $path));
             $this->request = $this->request->withUri($uri);
+        }else{
+            $this->current_language=$this->language[0];
         }
 
         $path = explode("/", $this->request->getURI()->getPath());
@@ -41,12 +43,6 @@ class App extends \R\App
             }
         }
         $this->country = array_unique($this->country);
-
-        if (in_array($path[0], $this->language)) {
-            $this->current_language = $path[0];
-        } else {
-            $this->current_language = $this->language[0];
-        }
 
         $this->current_country = explode("-", $this->current_language, 2)[1];
 

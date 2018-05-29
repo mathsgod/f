@@ -25,7 +25,7 @@ class Page extends \R\Page
     {
         if ($uri) {
             if ($uri[0] == "/") {
-                if ($this->app->current_language != $f->language[0]) {
+                if ($this->app->current_language != $this->app->language[0]) {
                     $uri = "/" . $this->app->current_language . $uri;
                 }
             }
@@ -133,9 +133,15 @@ class Page extends \R\Page
 
     protected function getTextDomain()
     {
+
+        $file=substr($this->file,strlen($this->root."/pages/"));
+        $pi=pathinfo($file);
+
+        $file=$pi["dirname"]."/".$pi["filename"];
+
         $_lang = setlocale(LC_ALL, 0);
-        $fi = preg_replace('/.[^.]*$/', '', basename($this->file));
-        $mo = glob(getcwd() . "/locale/{$_lang}/LC_MESSAGES/{$fi}-*.mo")[0];
+        //$fi = preg_replace('/.[^.]*$/', '', $file);
+        $mo = glob(getcwd() . "/locale/{$_lang}/LC_MESSAGES/{$file}-*.mo")[0];
 
         if ($mo) {
             $mo_file = substr($mo, strlen(getcwd() . "/locale/{$_lang}/LC_MESSAGES/"));
@@ -146,7 +152,7 @@ class Page extends \R\Page
     }
 
     public function __invoke($request, $response)
-    {
+    { 
         $this->request = $request;
 
         $method = strtolower($this->request->getMethod());
@@ -207,7 +213,7 @@ class Page extends \R\Page
         } else {
             if ($master = $this->master) {
                 $response->setHeader("Content-Type", "text/html; charset=UTF-8");
-                $master->assign("content", $content);
+                $master->data["content"]=$content;
                 $response = $master->__invoke($request, $response);
             } else {
                 $stream = new Stream();

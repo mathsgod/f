@@ -1,3 +1,6 @@
+## 2.2.1
+fix redirect
+
 ## 2.1.0
 
 - request page internally

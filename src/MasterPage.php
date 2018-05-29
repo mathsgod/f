@@ -6,19 +6,24 @@ use Exception;
 
 class MasterPage
 {
-    private $route;
+    public $app;
+    public $file;
     public $_twig;
     public $_template;
     public $master;
-    public $config = [];
-    public $template_file;
-    public $template_base;
-    public $app;
 
     public function __construct(App $app)
     {
         if (!$app) new Exception('App not found');
         $this->app = $app;
+
+        $this->file = $this->app->loader->findFile(get_called_class());
+
+        if($this->app->language[0]==$this->app->current_language){
+            $this->data["base"]="//".$_SERVER["SERVER_NAME"]."/";
+        }else{
+            $this->data["base"]="//".$_SERVER["SERVER_NAME"]."/".$this->app->current_language."/";
+        }
     }
 
     public function assign($name, $value)
@@ -57,15 +62,16 @@ class MasterPage
 
     public function __invoke($request, $response)
     {
-        $this->data["base"] = $request->getURI()->getBasePath();
+//        $this->data["base"] = $request->getURI()->getBasePath();
+
         // read lang
         $lang = $this->app->current_language;
-        $this->data["lang"] = $lang;
+        $this->data["lang"] = $lang; 
 
         //file template
         $this->_template = $this->app->findTemplate($this->file);
 
-        if ($this->_template instanceof \Twig_Template) {
+        if ($this->_template) {
             if ($domain = $this->getTextDomain()) {
                 bindtextdomain($domain, getcwd() . "/locale");
                 textdomain($domain);
@@ -75,9 +81,9 @@ class MasterPage
         }
 
         if ($this->master) {
-            $this->master->assign("content", $content);
+            $this->master->data["content"] = $content;
 
-            return $this->master($request, $response);
+            return $this->master->__invoke($request, $response);
         }
 
         return $response->withBody(new Stream($content));
