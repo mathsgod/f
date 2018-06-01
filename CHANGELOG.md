@@ -1,5 +1,28 @@
+## 2.3.0
+alert function
+```php
+class _index class F\Page{
+    public function get(){
+        $this->alert->info("info");
+        $this->alert->danger("danger");
+        $this->alert->warning("warning");
+        $this->alert->success("success");
+    }
+}
+```
+
+```twig
+{% for alert in app.alerts %}
+    {{alert.type}}
+    {{alert.message}}
+{% endfor %}
+```
+---
+
 ## 2.2.1
 fix redirect
+
+---
 
 ## 2.1.0
 

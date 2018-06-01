@@ -49,6 +49,19 @@ class App extends \R\App
         setlocale(LC_ALL, $this->language_locale_map[$this->current_language]);
     }
 
+    public function alerts(){
+        $data=[];
+        if($_SESSION["f"]["alert"]){
+            foreach($_SESSION["f"]["alert"] as $a) {
+                $data[]=$a;
+            }
+        }
+        
+        unset($_SESSION["f"]["alert"]);
+
+        return $data;
+    }
+
     public function findTemplate($file)
     {
         $pi = pathinfo($file);
@@ -85,7 +98,6 @@ class App extends \R\App
             return $twig["environment"]->loadTemplate($uri);
         }
     }
-
 
     public function get($uri)
     {

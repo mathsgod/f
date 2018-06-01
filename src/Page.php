@@ -14,6 +14,13 @@ class Page extends \R\Page
     public function __construct(App $app)
     {
         parent::__construct($app);
+
+        if(!$_SESSION["f"]["alert"]){
+            $_SESSION["f"]["alert"]=new Alert();
+        }
+        $this->alert = $_SESSION["f"]["alert"];
+
+        $this->app->alert=$this->alert;
     }
 
     public function redirect($uri, $params)
@@ -188,7 +195,7 @@ class Page extends \R\Page
                 textdomain($domain);
             }
 
-            $this->data["app"]["request"] = $request;
+            $this->data["app"]=$this->app;
 
             $ret = $response->getBody()->getContents();
             if (is_array($ret)) {
