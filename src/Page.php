@@ -10,17 +10,19 @@ class Page extends \R\Page
     public $master;
     public $template;
     public $data = [];
+    public $alt;
 
     public function __construct(App $app)
     {
         parent::__construct($app);
 
-        if(!$_SESSION["f"]["alert"]){
-            $_SESSION["f"]["alert"]=new Alert();
+        if (!$_SESSION["f"]["alert"]) {
+            $_SESSION["f"]["alert"] = new Alert();
         }
         $this->alert = $_SESSION["f"]["alert"];
 
-        $this->app->alert=$this->alert;
+        $this->app->alert = $this->alert;
+        $this->alt = $this->app->alt;
     }
 
     public function redirect($uri, $params)
@@ -141,10 +143,10 @@ class Page extends \R\Page
     protected function getTextDomain()
     {
 
-        $file=substr($this->file,strlen($this->root."/pages/"));
-        $pi=pathinfo($file);
+        $file = substr($this->file, strlen($this->root . "/pages/"));
+        $pi = pathinfo($file);
 
-        $file=$pi["dirname"]."/".$pi["filename"];
+        $file = $pi["dirname"] . "/" . $pi["filename"];
 
         $_lang = setlocale(LC_ALL, 0);
         //$fi = preg_replace('/.[^.]*$/', '', $file);
@@ -159,7 +161,7 @@ class Page extends \R\Page
     }
 
     public function __invoke($request, $response)
-    { 
+    {
         $this->request = $request;
 
         $method = strtolower($this->request->getMethod());
@@ -195,7 +197,7 @@ class Page extends \R\Page
                 textdomain($domain);
             }
 
-            $this->data["app"]=$this->app;
+            $this->data["app"] = $this->app;
 
             $ret = $response->getBody()->getContents();
             if (is_array($ret)) {
@@ -220,7 +222,7 @@ class Page extends \R\Page
         } else {
             if ($master = $this->master) {
                 $response->setHeader("Content-Type", "text/html; charset=UTF-8");
-                $master->data["content"]=$content;
+                $master->data["content"] = $content;
                 $response = $master->__invoke($request, $response);
             } else {
                 $stream = new Stream();
