@@ -11,6 +11,7 @@ class MasterPage
     public $_twig;
     public $_template;
     public $master;
+    public $alt;
 
     public function __construct(App $app)
     {
@@ -19,11 +20,13 @@ class MasterPage
 
         $this->file = $this->app->loader->findFile(get_called_class());
 
-        if($this->app->language[0]==$this->app->current_language){
-            $this->data["base"]="//".$_SERVER["SERVER_NAME"]."/";
-        }else{
-            $this->data["base"]="//".$_SERVER["SERVER_NAME"]."/".$this->app->current_language."/";
+        if ($this->app->language[0] == $this->app->current_language) {
+            $this->data["base"] = "//" . $_SERVER["SERVER_NAME"] . "/";
+        } else {
+            $this->data["base"] = "//" . $_SERVER["SERVER_NAME"] . "/" . $this->app->current_language . "/";
         }
+
+        $this->alt = $this->app->alt;
     }
 
     public function assign($name, $value)
