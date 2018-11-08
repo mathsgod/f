@@ -84,7 +84,7 @@ class App extends \R\App
             $twig["environment"]->addGlobal("lang", $this->current_language);
 
             $function = new \Twig_SimpleFunction('_', function ($a, $b) {
-                $name = $b . "_" . \F::V();
+                $name = $b . "_" . $this->v();
                 if (is_object($a)) {
                     return $a->$name;
                 } elseif (is_array($a)) {
