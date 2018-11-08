@@ -29,7 +29,6 @@
         "hostlink/r-db": "*",
         "oyejorge/less.php": "*"
     },
-    "version": "2.4.1",
     "authors": [
         {
             "name": "Raymond Chong",

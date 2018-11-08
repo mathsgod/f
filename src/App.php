@@ -27,10 +27,10 @@ class App extends \R\App
         $path = array_values(array_filter($path, strlen));
         if (in_array($path[0], $this->language)) {
             $this->current_language = array_shift($path);
-            $uri = $uri->withPath("/".implode("/", $path));
+            $uri = $uri->withPath("/" . implode("/", $path));
             $this->request = $this->request->withUri($uri);
-        }else{
-            $this->current_language=$this->language[0];
+        } else {
+            $this->current_language = $this->language[0];
         }
 
         $path = explode("/", $this->request->getURI()->getPath());
@@ -49,14 +49,15 @@ class App extends \R\App
         setlocale(LC_ALL, $this->language_locale_map[$this->current_language]);
     }
 
-    public function alerts(){
-        $data=[];
-        if($_SESSION["f"]["alert"]){
-            foreach($_SESSION["f"]["alert"] as $a) {
-                $data[]=$a;
+    public function alerts()
+    {
+        $data = [];
+        if ($_SESSION["f"]["alert"]) {
+            foreach ($_SESSION["f"]["alert"] as $a) {
+                $data[] = $a;
             }
         }
-        
+
         unset($_SESSION["f"]["alert"]);
 
         return $data;
@@ -165,5 +166,30 @@ class App extends \R\App
         }
 
         exit();
+    }
+
+    public function twig($file)
+    {
+        $pi = pathinfo($file);
+
+        $file = $pi["dirname"] . "/" . $pi["filename"];
+        if (is_readable($template_file = $file . ".twig")) {
+
+            if (!$config = $this->config["twig"]) {
+                $config = [];
+            }
+            $root = $this->root;
+
+            array_walk($config, function (&$o) use ($root) {
+                $o = str_replace("{root}", $root, $o);
+            });
+
+            $twig["loader"] = new \Twig_Loader_Filesystem($root);
+            $twig["environment"] = new \Twig_Environment($twig["loader"], $config);
+            $twig["environment"]->addExtension(new \Twig_Extensions_Extension_I18n());
+
+
+            return $twig["environment"]->loadTemplate($template_file);
+        }
     }
 }
