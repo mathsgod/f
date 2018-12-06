@@ -14,10 +14,9 @@ class App extends \R\App
     public $current_language;
     public $current_country;
 
-    public function __construct($root)
+    public function __construct($root, $loader)
     {
-        parent::__construct($root);
-
+        parent::__construct($root, $loader);
         $this->language = $this->config["language"]["value"];
         $this->language_db_map = $this->config["language_db_map"];
         $this->language_locale_map = $this->config["language_locale_map"];
