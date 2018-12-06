@@ -20,13 +20,15 @@ class App extends \R\App
         $this->language = $this->config["language"]["value"];
         $this->language_db_map = $this->config["language_db_map"];
         $this->language_locale_map = $this->config["language_locale_map"];
-
+        
         $uri = $this->request->getURI();
         $path = explode("/", $uri->getPath());
         $path = array_values(array_filter($path, strlen));
         if (in_array($path[0], $this->language)) {
             $this->current_language = array_shift($path);
             $uri = $uri->withPath("/" . implode("/", $path));
+            $basePath=$this->request->getUri()->getBasePath();
+            $uri=$uri->withBasepath($basePath);
             $this->request = $this->request->withUri($uri);
         } else {
             $this->current_language = $this->language[0];
