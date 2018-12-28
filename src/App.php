@@ -166,20 +166,25 @@ class App extends \R\App
             header("location: /{$lang}/{$url}");
         }
 
-        exit();
+        exit(); 
     }
 
     public function twig($file)
     {
-        $pi = pathinfo($file);
+        if ($file[0] != "/") {
+            $pi = pathinfo($file);
+            $file = $pi["dirname"] . "/" . $pi["filename"];
+            $template_file = $file . ".twig";
+        } else {
+            $template_file = substr($file, strlen($this->root) + 1);
+        }
+        $root = $this->root;
 
-        $file = $pi["dirname"] . "/" . $pi["filename"];
-        if (is_readable($template_file = $file . ".twig")) {
+        if (is_readable($root . "/" . $template_file)) {
 
             if (!$config = $this->config["twig"]) {
                 $config = [];
             }
-            $root = $this->root;
 
             array_walk($config, function (&$o) use ($root) {
                 $o = str_replace("{root}", $root, $o);
