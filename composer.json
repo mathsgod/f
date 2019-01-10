@@ -3,7 +3,7 @@
         "type": "composer",
         "url": "https://raymond2.hostlink.com.hk/satis/web"
     }],
-    "name": "hostlink/f",
+    "name": "mathsgod/f",
     "description": "raymond frontend system",
     "autoload": {
         "psr-4": {
