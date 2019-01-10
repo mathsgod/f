@@ -1,10 +1,8 @@
 {
-    "repositories": {
-        "hostlink-raymond": {
-            "type": "composer",
-            "url": "https://raymond2.hostlink.com.hk/bitbucket/repo"
-        }
-    },
+    "repositories": [{
+        "type": "composer",
+        "url": "https://raymond2.hostlink.com.hk/satis/web"
+    }],
     "name": "hostlink/f",
     "description": "raymond frontend system",
     "autoload": {
@@ -14,7 +12,7 @@
     },
     "require": {
         "php": ">=5.4",
-        "hostlink/r": "2.*",
+        "mathsgod/r": "2.*",
         "twig/twig": "*",
         "twig/extensions": "*"
     },
@@ -26,7 +24,7 @@
     "license": "proprietary",
     "minimum-stability": "stable",
     "suggest": {
-        "hostlink/r-db": "*",
+        "mathsgod/r-db": "*",
         "oyejorge/less.php": "*"
     },
     "authors": [
