@@ -176,7 +176,12 @@ class App extends \R\App
             $file = $pi["dirname"] . "/" . $pi["filename"];
             $template_file = $file . ".twig";
         } else {
-            $template_file = substr($file, strlen($this->root) + 1);
+            if(file_exists($file)){
+                $template_file = substr($file, strlen($this->root) + 1);
+            }elseif(file_exists($this->root.$file)){
+                $template_file=$file;
+            }
+
         }
         $root = $this->root;
 
