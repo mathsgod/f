@@ -1,8 +1,10 @@
 {
-    "repositories": [{
-        "type": "composer",
-        "url": "https://raymond2.hostlink.com.hk/satis/web"
-    }],
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://raymond2.hostlink.com.hk/satis/web"
+        }
+    ],
     "name": "mathsgod/f",
     "description": "raymond frontend system",
     "autoload": {
@@ -11,7 +13,7 @@
         }
     },
     "require": {
-        "php": ">=5.4",
+        "php": ">=7.1",
         "mathsgod/r": "2.*",
         "twig/twig": "*",
         "twig/extensions": "*"

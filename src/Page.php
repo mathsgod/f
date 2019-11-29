@@ -1,4 +1,5 @@
 <?php
+
 namespace F;
 
 use R\Psr7\Response;
@@ -120,7 +121,7 @@ class Page extends \R\Page
         }
     }
 
-    public function template($file)
+    public function template(string $file = null)
     {
         if (!$file) {
             if ($this->template) {
@@ -210,7 +211,7 @@ class Page extends \R\Page
             }
             $response->setHeader("Content-Type", "text/html; charset=UTF-8");
         } else {
-            $content = (string)$response;
+            $content = (string) $response;
         }
 
         $content = $echo_content . $content;
