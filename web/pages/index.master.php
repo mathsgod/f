@@ -1,4 +1,4 @@
 <?
-class index_master extends F\MasterPage{
+class _index_master extends F\MasterPage{
     
 }

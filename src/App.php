@@ -1,6 +1,8 @@
 <?
+
 namespace F;
 
+use Composer\Autoload\ClassLoader;
 use R\Psr7\ServerRequest;
 use R\Psr7\Response;
 
@@ -14,21 +16,21 @@ class App extends \R\App
     public $current_language;
     public $current_country;
 
-    public function __construct($root, $loader)
+    public function __construct(string $root, ClassLoader $loader)
     {
         parent::__construct($root, $loader);
         $this->language = $this->config["language"]["value"];
         $this->language_db_map = $this->config["language_db_map"];
         $this->language_locale_map = $this->config["language_locale_map"];
-        
+
         $uri = $this->request->getURI();
         $path = explode("/", $uri->getPath());
-        $path = array_values(array_filter($path, strlen));
+        $path = array_values(array_filter($path, "strlen"));
         if (in_array($path[0], $this->language)) {
             $this->current_language = array_shift($path);
             $uri = $uri->withPath("/" . implode("/", $path));
-            $basePath=$this->request->getUri()->getBasePath();
-            $uri=$uri->withBasepath($basePath);
+            $basePath = $this->request->getUri()->getBasePath();
+            $uri = $uri->withBasepath($basePath);
             $this->request = $this->request->withUri($uri);
         } else {
             $this->current_language = $this->language[0];
@@ -36,7 +38,7 @@ class App extends \R\App
 
         $path = explode("/", $this->request->getURI()->getPath());
 
-                //get country
+        //get country
         foreach ($this->language as $lang) {
             $s = explode("-", $lang, 2);
             if ($country = $s[1]) {
@@ -50,7 +52,7 @@ class App extends \R\App
         setlocale(LC_ALL, $this->language_locale_map[$this->current_language]);
     }
 
-    public function alerts()
+    public function alerts(): array
     {
         $data = [];
         if ($_SESSION["f"]["alert"]) {
@@ -80,12 +82,12 @@ class App extends \R\App
                 $o = str_replace("{root}", $root, $o);
             });
 
-            $twig["loader"] = new \Twig_Loader_Filesystem($root);
-            $twig["environment"] = new \Twig_Environment($twig["loader"], $config);
+            $twig["loader"] = new \Twig\Loader\FilesystemLoader($root);
+            $twig["environment"] = new \Twig\Environment($twig["loader"], $config);
             $twig["environment"]->addExtension(new \Twig_Extensions_Extension_I18n());
             $twig["environment"]->addGlobal("lang", $this->current_language);
 
-            $function = new \Twig_SimpleFunction('_', function ($a, $b) {
+            $function = new \Twig\TwigFunction('_', function ($a, $b) {
                 $name = $b . "_" . $this->v();
                 if (is_object($a)) {
                     return $a->$name;
@@ -101,17 +103,17 @@ class App extends \R\App
         }
     }
 
-    public function get($uri)
+    public function get(string $uri)
     {
         return $this->request("GET", $uri);
     }
 
-    public function serverRequest()
+    public function serverRequest(): ServerRequest
     {
         return ServerRequest::FromEnv();
     }
 
-    public function request($method, $uri)
+    public function request(string $method, string $uri)
     {
         $url = parse_url($uri);
         $request = $this->serverRequest();
@@ -166,7 +168,7 @@ class App extends \R\App
             header("location: /{$lang}/{$url}");
         }
 
-        exit(); 
+        exit();
     }
 
     public function twig($file)
@@ -176,12 +178,11 @@ class App extends \R\App
             $file = $pi["dirname"] . "/" . $pi["filename"];
             $template_file = $file . ".twig";
         } else {
-            if(file_exists($file)){
+            if (file_exists($file)) {
                 $template_file = substr($file, strlen($this->root) + 1);
-            }elseif(file_exists($this->root.$file)){
-                $template_file=$file;
+            } elseif (file_exists($this->root . $file)) {
+                $template_file = $file;
             }
-
         }
         $root = $this->root;
 
@@ -195,8 +196,8 @@ class App extends \R\App
                 $o = str_replace("{root}", $root, $o);
             });
 
-            $twig["loader"] = new \Twig_Loader_Filesystem($root);
-            $twig["environment"] = new \Twig_Environment($twig["loader"], $config);
+            $twig["loader"] = new \Twig\Loader\FilesystemLoader($root);
+            $twig["environment"] = new \Twig\Environment($twig["loader"], $config);
             $twig["environment"]->addExtension(new \Twig_Extensions_Extension_I18n());
 
 

@@ -5,5 +5,5 @@ error_reporting(E_ALL && ~E_WARNING);
 setlocale(LC_ALL, 'en_US.UTF-8'); //do not remove
 
 $loader = require_once("../vendor/autoload.php");
-$f = new F\App();
+$f = new F\App(__DIR__, $loader);
 $f->run();

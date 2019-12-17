@@ -2,9 +2,10 @@
 
 namespace F;
 
-use R\Psr7\Response;
 use R\Psr7\Stream;
 use Exception;
+use Psr\Http\Message\ResponseInterface;
+use R\Psr7\ServerRequest;
 
 class Page extends \R\Page
 {
@@ -141,27 +142,25 @@ class Page extends \R\Page
         $this->data[$name] = $value;
     }
 
-    protected function getTextDomain()
+    protected function getTextDomain(): string
     {
-
-        $file = substr($this->file, strlen($this->root . "/pages/"));
+        $file = substr($this->file, strlen($this->app->root . "/pages/"));
         $pi = pathinfo($file);
 
         $file = $pi["dirname"] . "/" . $pi["filename"];
 
-        $_lang = setlocale(LC_ALL, 0);
-        //$fi = preg_replace('/.[^.]*$/', '', $file);
-        $mo = glob(getcwd() . "/locale/{$_lang}/LC_MESSAGES/{$file}-*.mo")[0];
+        $lang = $this->app->current_language;
+        $mo = glob($this->app->root . "/locale/{$lang}/LC_MESSAGES/{$file}-*.mo")[0];
 
         if ($mo) {
-            $mo_file = substr($mo, strlen(getcwd() . "/locale/{$_lang}/LC_MESSAGES/"));
+            $mo_file = substr($mo, strlen($this->app->root . "/locale/{$lang}/LC_MESSAGES/"));
             $domain = preg_replace('/.[^.]*$/', '', $mo_file);
             return $domain;
         }
         return uniqid();
     }
 
-    public function __invoke($request, $response)
+    public function __invoke(ServerRequest $request, ResponseInterface $response): ResponseInterface
     {
         $this->request = $request;
 
@@ -193,10 +192,10 @@ class Page extends \R\Page
 
         //check template
         if ($template = $this->template) {
-            if ($domain = $this->getTextDomain()) {
-                bindtextdomain($domain, getcwd() . "/locale");
-                textdomain($domain);
-            }
+            $domain = $this->getTextDomain();
+            bindtextdomain($domain, $this->app->root . "/locale");
+            textdomain($domain);
+
 
             $this->data["app"] = $this->app;
 
@@ -209,7 +208,8 @@ class Page extends \R\Page
             } catch (\Twig_Error_Runtime $e) {
                 $content .= $e->getMessage();
             }
-            $response->setHeader("Content-Type", "text/html; charset=UTF-8");
+
+            $response->withHeader("Content-Type", "text/html; charset=UTF-8");
         } else {
             $content = (string) $response;
         }
@@ -222,7 +222,7 @@ class Page extends \R\Page
             $response = $response->withBody($stream);
         } else {
             if ($master = $this->master) {
-                $response->setHeader("Content-Type", "text/html; charset=UTF-8");
+                $response->withHeader("Content-Type", "text/html; charset=UTF-8");
                 $master->data["content"] = $content;
                 $response = $master->__invoke($request, $response);
             } else {
