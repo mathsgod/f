@@ -13,8 +13,8 @@
         }
     },
     "require": {
-        "php": ">=7.1",
-        "mathsgod/r": "2.*",
+        "php": ">=7.0",
+        "mathsgod/r": "3.*",
         "twig/twig": "*",
         "twig/extensions": "*"
     },
