@@ -148,8 +148,9 @@ class Page extends \R\Page
         $pi = pathinfo($file);
 
         $file = $pi["dirname"] . "/" . $pi["filename"];
+        
+        $lang =  $this->app->language_locale_map[$this->app->current_language];
 
-        $lang = $this->app->current_language;
         $mo = glob($this->app->root . "/locale/{$lang}/LC_MESSAGES/{$file}-*.mo")[0];
 
         if ($mo) {
