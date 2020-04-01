@@ -27,12 +27,12 @@ class Page extends \R\Page
         $this->alt = $this->app->alt;
     }
 
-    public function redirect($uri, $params)
+    public function redirect($uri, $params = null)
     {
         return $this->_redirect($uri, $params);
     }
 
-    public function _redirect($uri, $params)
+    public function _redirect($uri, $params = null)
     {
         if ($uri) {
             if ($uri[0] == "/") {
@@ -148,7 +148,7 @@ class Page extends \R\Page
         $pi = pathinfo($file);
 
         $file = $pi["dirname"] . "/" . $pi["filename"];
-        
+
         $lang =  $this->app->language_locale_map[$this->app->current_language];
 
         $mo = glob($this->app->root . "/locale/{$lang}/LC_MESSAGES/{$file}-*.mo")[0];
