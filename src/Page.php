@@ -27,12 +27,12 @@ class Page extends \R\Page
         $this->alt = $this->app->alt;
     }
 
-    public function redirect($uri, $params = null)
+    public function redirect($uri = null, $params = null)
     {
         return $this->_redirect($uri, $params);
     }
 
-    public function _redirect($uri, $params = null)
+    public function _redirect($uri = null, $params = null)
     {
         if ($uri) {
             if ($uri[0] == "/") {
