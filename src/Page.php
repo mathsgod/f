@@ -165,6 +165,10 @@ class Page extends \R\Page
     {
         $this->request = $request;
 
+        $domain = $this->getTextDomain();
+        bindtextdomain($domain, $this->app->root . "/locale");
+        textdomain($domain);
+
         $method = strtolower($this->request->getMethod());
         if ($method == "get" && ($request->isAccept("text/html") || $request->isAccept("*/*"))) {
             $this->master();
@@ -193,11 +197,6 @@ class Page extends \R\Page
 
         //check template
         if ($template = $this->template) {
-            $domain = $this->getTextDomain();
-            bindtextdomain($domain, $this->app->root . "/locale");
-            textdomain($domain);
-
-
             $this->data["app"] = $this->app;
 
             $ret = $response->getBody()->getContents();
