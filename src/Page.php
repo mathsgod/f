@@ -194,7 +194,8 @@ class Page extends \R\Page
         }
         $echo_content = ob_get_contents();
         ob_end_clean();
-
+        
+        $content = "";
         //check template
         if ($template = $this->template) {
             $this->data["app"] = $this->app;
@@ -205,7 +206,7 @@ class Page extends \R\Page
             }
             try {
                 $content .= $template->render($this->data);
-            } catch (\Twig_Error_Runtime $e) {
+            } catch (\Twig\Error\RuntimeError $e) {
                 $content .= $e->getMessage();
             }
 
