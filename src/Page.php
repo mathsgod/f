@@ -181,11 +181,9 @@ class Page extends \R\Page
         } catch (Exception $e) {
             if ($request->getHeader("Accept")[0] == "application/json") {
                 $response = $response->withHeader("Content-Type", "application/json; charset=UTF-8");
-                if ($e->getCode()) {
-                    $ret = ["code" => $e->getCode(), "message" => $e->getMessage()];
-                } else {
-                    $ret = ["message" => $e->getMessage()];
-                }
+                $ret = [];
+                if ($e->getCode()) $ret["code"] = $e->getCode();
+                $ret["message"] = $e->getMessage();
                 return $response->withBody(new Stream(json_encode($ret)));
             } else {
                 $response = $response->withHeader("Content-Type", "text/html; charset=UTF-8")
@@ -194,7 +192,7 @@ class Page extends \R\Page
         }
         $echo_content = ob_get_contents();
         ob_end_clean();
-        
+
         $content = "";
         //check template
         if ($template = $this->template) {
