@@ -7,6 +7,9 @@ use Exception;
 use Psr\Http\Message\ResponseInterface;
 use R\Psr7\ServerRequest;
 
+/**
+ * @property App $app
+ */
 class Page extends \R\Page
 {
     public $master;
