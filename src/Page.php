@@ -2,10 +2,12 @@
 
 namespace F;
 
-use R\Psr7\Stream;
 use Exception;
+use PHP\Psr7\JsonStream;
+use PHP\Psr7\Stream;
+use PHP\Psr7\StringStream;
+use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use R\Psr7\ServerRequest;
 
 /**
  * @property App $app
@@ -164,7 +166,20 @@ class Page extends \R\Page
         return uniqid();
     }
 
-    public function __invoke(ServerRequest $request, ResponseInterface $response): ResponseInterface
+    protected function isAccept(string $type)
+    {
+        $accepts = $this->request->getHeader("accept");
+        foreach ($accepts as $accept) {
+            $r = explode(";", $accept);
+            if ($r[0] == $type) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    public function __invoke(RequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         $this->request = $request;
 
@@ -173,7 +188,7 @@ class Page extends \R\Page
         textdomain($domain);
 
         $method = strtolower($this->request->getMethod());
-        if ($method == "get" && ($request->isAccept("text/html") || $request->isAccept("*/*"))) {
+        if ($method == "GET" && ($this->isAccept("text/html") || $this->isAccept("*/*"))) {
             $this->master();
             $this->template();
         }
@@ -187,10 +202,10 @@ class Page extends \R\Page
                 $ret = [];
                 if ($e->getCode()) $ret["code"] = $e->getCode();
                 $ret["message"] = $e->getMessage();
-                return $response->withBody(new Stream(json_encode($ret)));
+                return $response->withBody(new JsonStream($ret));
             } else {
                 $response = $response->withHeader("Content-Type", "text/html; charset=UTF-8")
-                    ->withBody(new Stream($e->getMessage()));
+                    ->withBody(new StringStream($e->getMessage()));
             }
         }
         $echo_content = ob_get_contents();
@@ -219,18 +234,14 @@ class Page extends \R\Page
         $content = $echo_content . $content;
 
         if ($request->getHeader("Accept")[0] == "application/json") {
-            $stream = new Stream();
-            $stream->write($content);
-            $response = $response->withBody($stream);
+            $response = $response->withBody(new StringStream($content));
         } else {
             if ($master = $this->master) {
                 $response->withHeader("Content-Type", "text/html; charset=UTF-8");
                 $master->data["content"] = $content;
                 $response = $master->__invoke($request, $response);
             } else {
-                $stream = new Stream();
-                $stream->write($content);
-                $response = $response->withBody($stream);
+                $response = $response->withBody(new StringStream($content));
             }
         }
 

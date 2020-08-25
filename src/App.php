@@ -3,8 +3,10 @@
 namespace F;
 
 use Composer\Autoload\ClassLoader;
-use R\Psr7\ServerRequest;
-use R\Psr7\Response;
+use PHP\Psr7\Response;
+use PHP\Psr7\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
+
 
 class App extends \R\App
 {
@@ -108,9 +110,9 @@ class App extends \R\App
         return $this->request("GET", $uri);
     }
 
-    public function serverRequest(): ServerRequest
+    public function serverRequest(): ServerRequestInterface
     {
-        return ServerRequest::FromEnv();
+        return new ServerRequest;
     }
 
     public function request(string $method, string $uri)
