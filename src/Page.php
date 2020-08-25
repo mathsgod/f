@@ -219,7 +219,7 @@ class Page extends \R\Page
         if ($template = $this->template) {
             $this->data["app"] = $this->app;
 
-            $ret = (string) $response->getBody();
+            $ret = $response->getBody()->getContents();
             if (is_array($ret)) {
                 $this->data = array_merge($this->data, $ret);
             }
