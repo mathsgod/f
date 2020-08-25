@@ -62,6 +62,7 @@ class Page extends \R\Page
         $pi = pathinfo($this->file);
         $root = $this->root;
 
+
         if (file_exists($file = $root . "/" . $pi["filename"] . ".master.php")) {
             $this->app->loader->addClassMap(["_index_master" => $file]);
             return [
@@ -187,7 +188,8 @@ class Page extends \R\Page
         bindtextdomain($domain, $this->app->root . "/locale");
         textdomain($domain);
 
-        $method = strtolower($this->request->getMethod());
+        $method = $this->request->getMethod();
+
         if ($method == "GET" && ($this->isAccept("text/html") || $this->isAccept("*/*"))) {
             $this->master();
             $this->template();

@@ -31,14 +31,11 @@ class App extends \R\App
         if (in_array($path[0], $this->language)) {
             $this->current_language = array_shift($path);
             $uri = $uri->withPath("/" . implode("/", $path));
-            $basePath = $this->request->getUri()->getBasePath();
-            $uri = $uri->withBasepath($basePath);
             $this->request = $this->request->withUri($uri);
         } else {
             $this->current_language = $this->language[0];
         }
 
-        $path = explode("/", $this->request->getURI()->getPath());
 
         //get country
         foreach ($this->language as $lang) {
@@ -52,6 +49,13 @@ class App extends \R\App
         $this->current_country = explode("-", $this->current_language, 2)[1];
 
         setlocale(LC_ALL, $this->language_locale_map[$this->current_language]);
+
+
+        $path = $this->request->getUri()->getPath();
+        $path = substr($path, strlen($this->base_path));
+        $uri = $this->request->getUri();
+        $uri = $uri->withPath($path);
+        $this->request = $this->request->withUri($uri);
     }
 
     public function alerts(): array
