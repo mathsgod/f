@@ -1,8 +1,9 @@
 <?php
+
 namespace F;
 
-use R\Psr7\Stream;
 use Exception;
+use PHP\Psr7\StringStream;
 
 class MasterPage
 {
@@ -65,11 +66,11 @@ class MasterPage
 
     public function __invoke($request, $response)
     {
-//        $this->data["base"] = $request->getURI()->getBasePath();
+        //        $this->data["base"] = $request->getURI()->getBasePath();
 
         // read lang
         $lang = $this->app->current_language;
-        $this->data["lang"] = $lang; 
+        $this->data["lang"] = $lang;
 
         //file template
         $this->_template = $this->app->findTemplate($this->file);
@@ -89,6 +90,6 @@ class MasterPage
             return $this->master->__invoke($request, $response);
         }
 
-        return $response->withBody(new Stream($content));
+        return $response->withBody(new StringStream($content));
     }
 }

@@ -16,7 +16,8 @@
         "php": ">=7.0",
         "mathsgod/r": "3.*",
         "twig/twig": "*",
-        "twig/extensions": "*"
+        "twig/extensions": "*",
+        "mathsgod/php-psr7": "^1.0"
     },
     "require-dev": {
         "phpunit/phpunit": "*",
