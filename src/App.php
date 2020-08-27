@@ -196,12 +196,12 @@ class App extends \R\App
                 $o = str_replace("{root}", $root, $o);
             });
 
-            $twig["loader"] = new \Twig\Loader\FilesystemLoader($root);
+            $twig["loader"] = new \Twig\Loader\FilesystemLoader(dirname($template_file));
             $twig["environment"] = new \Twig\Environment($twig["loader"], $config);
             $twig["environment"]->addExtension(new \Twig_Extensions_Extension_I18n());
 
 
-            return $twig["environment"]->loadTemplate($template_file);
+            return $twig["environment"]->loadTemplate(basename($template_file));
         }
     }
 }
