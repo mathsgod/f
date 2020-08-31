@@ -27,8 +27,7 @@
     "license": "proprietary",
     "minimum-stability": "stable",
     "suggest": {
-        "mathsgod/r-db": "*",
-        "oyejorge/less.php": "*"
+        "mathsgod/r-db": "*"
     },
     "authors": [
         {
