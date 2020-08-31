@@ -4,7 +4,6 @@ namespace F;
 
 use Composer\Autoload\ClassLoader;
 use PHP\Psr7\Response;
-use PHP\Psr7\ServerRequest;
 use Psr\Http\Message\ServerRequestInterface;
 
 
@@ -50,11 +49,10 @@ class App extends \R\App
 
         setlocale(LC_ALL, $this->language_locale_map[$this->current_language]);
 
-
         $path = $this->request->getUri()->getPath();
         $path = substr($path, strlen($this->base_path));
         $uri = $this->request->getUri();
-        $uri = $uri->withPath($path);
+        $uri = $uri->withPath("/" . $path);
         $this->request = $this->request->withUri($uri);
     }
 
@@ -116,7 +114,7 @@ class App extends \R\App
 
     public function serverRequest(): ServerRequestInterface
     {
-        return new ServerRequest;
+        return $this->request;
     }
 
     public function request(string $method, string $uri)

@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "mathsgod/php-psr7",
-            "version": "1.0.12",
+            "version": "1.0.17",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mathsgod/php-psr7.git",
-                "reference": "c80b253ed24793705ad501189737953fbba3edbd"
+                "reference": "ccd0d8a6b6d6cd551ffe3334a844d889cf77d960"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mathsgod/php-psr7/zipball/c80b253ed24793705ad501189737953fbba3edbd",
-                "reference": "c80b253ed24793705ad501189737953fbba3edbd",
+                "url": "https://api.github.com/repos/mathsgod/php-psr7/zipball/ccd0d8a6b6d6cd551ffe3334a844d889cf77d960",
+                "reference": "ccd0d8a6b6d6cd551ffe3334a844d889cf77d960",
                 "shasum": ""
             },
             "require": {
@@ -47,7 +47,7 @@
                 }
             ],
             "description": "A standard implementation of php psr7",
-            "time": "2020-08-25T03:25:50+00:00"
+            "time": "2020-08-31T08:19:05+00:00"
         },
         {
             "name": "mathsgod/r",
@@ -1189,7 +1189,6 @@
             "keywords": [
                 "tokenizer"
             ],
-            "abandoned": true,
             "time": "2017-11-27T05:48:46+00:00"
         },
         {
