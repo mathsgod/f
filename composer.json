@@ -14,7 +14,7 @@
     },
     "require": {
         "php": ">=7.0",
-        "mathsgod/r": "3.*",
+        "mathsgod/r": "^3.7",
         "twig/twig": "*",
         "twig/extensions": "*",
         "mathsgod/php-psr7": "^1.0"

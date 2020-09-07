@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fbe820aa1d0e67c87e5e60d2947b07ff",
+    "content-hash": "e3f3fa11ee6da74df99a7dae5c04ba0b",
     "packages": [
         {
             "name": "mathsgod/php-psr7",
@@ -51,11 +51,11 @@
         },
         {
             "name": "mathsgod/r",
-            "version": "3.6.5",
+            "version": "3.7.1",
             "source": {
                 "type": "git",
                 "url": "https://mathsgod:d97ca44a017f09f662c0761828b0f66caf373415@github.com/mathsgod/r.git",
-                "reference": "77518bb39b736c1582c033c85223debaf634e668"
+                "reference": "791338a22747f122763193993bfc4e1272dfc40a"
             },
             "require": {
                 "mathsgod/php-psr7": "^1.0",
@@ -90,7 +90,7 @@
                 }
             ],
             "description": "raymond core",
-            "time": "2020-08-31T05:27:23+00:00"
+            "time": "2020-09-07T03:49:32+00:00"
         },
         {
             "name": "psr/http-message",
