@@ -19,6 +19,11 @@ class Page extends \R\Page
     public $data = [];
     public $alt;
 
+
+    private $redirected = false;
+    private $redirect_uri;
+
+
     public function __construct(App $app)
     {
         parent::__construct($app);
@@ -39,6 +44,8 @@ class Page extends \R\Page
 
     public function _redirect($uri = null, $params = null)
     {
+
+        $this->redirected = true;
         if ($uri) {
             if ($uri[0] == "/") {
                 if ($this->app->current_language != $this->app->language[0]) {
@@ -48,12 +55,12 @@ class Page extends \R\Page
             if ($params) {
                 $uri .= "?" . http_build_query($params);
             }
-            $this->response = $this->response->withHeader("Location", $uri);
+            $this->redirect_uri = $uri;
             return;
         }
         $header = $this->request->getHeader("Referer");
         if ($h = $header[0]) {
-            $this->response = $this->response->withHeader("Location", $h);
+            $this->redirect_uri = $uri;
         }
     }
 
@@ -198,6 +205,10 @@ class Page extends \R\Page
         ob_start();
         try {
             $response = parent::__invoke($request, $response);
+            if ($this->redirected) {
+                $response = $response->withHeader("Location", $this->redirect_uri);
+                return $response;
+            }
         } catch (Exception $e) {
             if ($request->getHeader("Accept")[0] == "application/json") {
                 $response = $response->withHeader("Content-Type", "application/json; charset=UTF-8");
