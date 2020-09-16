@@ -205,6 +205,12 @@ class Page extends \R\Page
         ob_start();
         try {
             $response = parent::__invoke($request, $response);
+
+            if (strstr($response->getHeaderLine("Content-Type"), "application/json") !== false) {
+                $this->template = null;
+                $this->master = null;
+            }
+
             if ($this->redirected) {
                 $response = $response->withHeader("Location", $this->redirect_uri);
                 return $response;
