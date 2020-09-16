@@ -130,10 +130,10 @@ class App extends \R\App
         $router = $this->router;
 
         $route = $router->getRoute($r, $this->loader);
-
+        $r = $r->withRequestTarget($route->method);
         if ($class = $route->class) {
             $page = new $class($this);
-            return $page($request, new Response(200));
+            return $page($r, new Response(200));
         }
 
         return null;
