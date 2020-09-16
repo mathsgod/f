@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fbe820aa1d0e67c87e5e60d2947b07ff",
+    "content-hash": "e3f3fa11ee6da74df99a7dae5c04ba0b",
     "packages": [
         {
             "name": "mathsgod/php-psr7",
-            "version": "1.0.17",
+            "version": "1.0.18",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mathsgod/php-psr7.git",
-                "reference": "ccd0d8a6b6d6cd551ffe3334a844d889cf77d960"
+                "reference": "87841abbe416f057d72d3cdbad1c9c678f4a529a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mathsgod/php-psr7/zipball/ccd0d8a6b6d6cd551ffe3334a844d889cf77d960",
-                "reference": "ccd0d8a6b6d6cd551ffe3334a844d889cf77d960",
+                "url": "https://api.github.com/repos/mathsgod/php-psr7/zipball/87841abbe416f057d72d3cdbad1c9c678f4a529a",
+                "reference": "87841abbe416f057d72d3cdbad1c9c678f4a529a",
                 "shasum": ""
             },
             "require": {
@@ -47,15 +47,15 @@
                 }
             ],
             "description": "A standard implementation of php psr7",
-            "time": "2020-08-31T08:19:05+00:00"
+            "time": "2020-09-02T10:47:58+00:00"
         },
         {
             "name": "mathsgod/r",
-            "version": "3.6.1",
+            "version": "3.7.1",
             "source": {
                 "type": "git",
                 "url": "https://mathsgod:d97ca44a017f09f662c0761828b0f66caf373415@github.com/mathsgod/r.git",
-                "reference": "58dec2c44c78e215188dd240888e8182ee7553b4"
+                "reference": "791338a22747f122763193993bfc4e1272dfc40a"
             },
             "require": {
                 "mathsgod/php-psr7": "^1.0",
@@ -90,7 +90,7 @@
                 }
             ],
             "description": "raymond core",
-            "time": "2020-08-25T03:17:32+00:00"
+            "time": "2020-09-07T03:49:32+00:00"
         },
         {
             "name": "psr/http-message",
@@ -1189,6 +1189,7 @@
             "keywords": [
                 "tokenizer"
             ],
+            "abandoned": true,
             "time": "2017-11-27T05:48:46+00:00"
         },
         {

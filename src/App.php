@@ -48,12 +48,7 @@ class App extends \R\App
         $this->current_country = explode("-", $this->current_language, 2)[1];
 
         setlocale(LC_ALL, $this->language_locale_map[$this->current_language]);
-
-        $path = $this->request->getUri()->getPath();
-        $path = substr($path, strlen($this->base_path));
-        $uri = $this->request->getUri();
-        $uri = $uri->withPath("/" . $path);
-        $this->request = $this->request->withUri($uri);
+        
     }
 
     public function alerts(): array
