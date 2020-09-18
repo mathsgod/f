@@ -162,6 +162,7 @@ class Page extends \R\Page
 
         $file = $pi["dirname"] . "/" . $pi["filename"];
 
+
         $lang =  $this->app->language_locale_map[$this->app->current_language];
 
         $mo = glob($this->app->root . "/locale/{$lang}/LC_MESSAGES/{$file}-*.mo")[0];
@@ -191,10 +192,6 @@ class Page extends \R\Page
     {
         $this->request = $request;
 
-        $domain = $this->getTextDomain();
-        bindtextdomain($domain, $this->app->root . "/locale");
-        textdomain($domain);
-
         $method = $this->request->getMethod();
 
         if ($method == "GET" && ($this->isAccept("text/html") || $this->isAccept("*/*"))) {
@@ -202,9 +199,14 @@ class Page extends \R\Page
             $this->template();
         }
 
+        $domain = $this->getTextDomain();
+        bindtextdomain($domain, $this->app->root . "/locale");
+
         ob_start();
         try {
+            textdomain($domain);
             $response = parent::__invoke($request, $response);
+            textdomain($domain);// 由於invoke後,有機會因為app->get影響到textdomain,所以要REBIND
 
             if (strstr($response->getHeaderLine("Content-Type"), "application/json") !== false) {
                 $this->template = null;
@@ -227,6 +229,9 @@ class Page extends \R\Page
                     ->withBody(new StringStream($e->getMessage()));
             }
         }
+
+
+
         $echo_content = ob_get_contents();
         ob_end_clean();
 
