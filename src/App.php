@@ -48,7 +48,6 @@ class App extends \R\App
         $this->current_country = explode("-", $this->current_language, 2)[1];
 
         setlocale(LC_ALL, $this->language_locale_map[$this->current_language]);
-        
     }
 
     public function alerts(): array
@@ -96,6 +95,10 @@ class App extends \R\App
                 return $b;
             });
             $twig["environment"]->addFunction($function);
+
+            if (class_exists("Twig\Dynamic\Extension")) {
+                $twig["environment"]->addExtension(new \Twig\Dynamic\Extension());
+            }
 
             $uri = substr($template_file, strlen($root) + 1);
             return $twig["environment"]->loadTemplate($uri);
@@ -198,6 +201,10 @@ class App extends \R\App
             $twig["loader"] = new \Twig\Loader\FilesystemLoader(dirname($template_file));
             $twig["environment"] = new \Twig\Environment($twig["loader"], $config);
             $twig["environment"]->addExtension(new \Twig_Extensions_Extension_I18n());
+
+            if (class_exists("Twig\Dynamic\Extension")) {
+                $twig["environment"]->addExtension(new \Twig\Dynamic\Extension());
+            }
 
 
             return $twig["environment"]->loadTemplate(basename($template_file));
