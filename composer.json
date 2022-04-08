@@ -13,8 +13,7 @@
     "require": {
         "php": ">=5.4",
         "mathsgod/r": "2.*",
-        "twig/twig": "^3.3",
-        "twig/extra-bundle": "^3.3",
+        "twig/twig": "^2.14",
         "symfony/translation": "^6.0"
     },
     "require-dev": {
