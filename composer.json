@@ -14,7 +14,7 @@
         "php": ">=5.4",
         "mathsgod/r": "2.*",
         "twig/twig": "^2.14",
-        "symfony/translation": "^6.0"
+        "twig/extensions": "^1.5"
     },
     "require-dev": {
         "oyejorge/less.php": "*"

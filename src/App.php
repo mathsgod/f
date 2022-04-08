@@ -87,10 +87,8 @@ class App extends \R\App
             });
 
             $twig["loader"] = new FilesystemLoader($root);;
-            $twig["environment"] = $env = new Environment($twig["loader"], $config);
-
-            $extension = new TranslationExtension(new Translator("en"));
-            $env->addExtension($extension);
+            $env = new Environment($twig["loader"], $config);
+            $env->addExtension(new \Twig_Extensions_Extension_I18n());
             $env->addGlobal("lang", $this->current_language);
 
             $function = new TwigFunction('_', function ($a, $b) {
@@ -102,10 +100,11 @@ class App extends \R\App
                 }
                 return $b;
             });
-            $twig["environment"]->addFunction($function);
+            $env->addFunction($function);
+            $twig["environment"] = $env;
 
             $uri = substr($template_file, strlen($root) + 1);
-            return $twig["environment"]->load($uri);
+            return $env->load($uri);
         }
     }
 
@@ -200,11 +199,8 @@ class App extends \R\App
 
             $twig["loader"] = new FilesystemLoader($root);;
             $twig["environment"] = $env = new Environment($twig["loader"], $config);
-
-            $extension = new TranslationExtension(new Translator("en"));
-            $env->addExtension($extension);
+            $twig["environment"]->addExtension(new \Twig_Extensions_Extension_I18n());
             $env->addGlobal("lang", $this->current_language);
-
 
             return $twig["environment"]->load($template_file);
         }
