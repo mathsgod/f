@@ -1,9 +1,12 @@
 <?php
+
 namespace F;
 
 use R\Psr7\Response;
 use R\Psr7\Stream;
 use Exception;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 class Page extends \R\Page
 {
@@ -120,7 +123,7 @@ class Page extends \R\Page
         }
     }
 
-    public function template($file)
+    public function template($file = null)
     {
         if (!$file) {
             if ($this->template) {
@@ -160,15 +163,21 @@ class Page extends \R\Page
         return uniqid();
     }
 
-    public function __invoke($request, $response)
+    function __invoke(ServerRequestInterface $request, ResponseInterface $response)
     {
         $this->request = $request;
 
         $method = strtolower($this->request->getMethod());
-        if ($method == "get" && ($request->isAccept("text/html") || $request->isAccept("*/*"))) {
-            $this->master();
-            $this->template();
+        $accept = $this->request->getHeaderLine("Accept");
+
+        if ($method == "get") {
+
+            if (stripos($accept, "text/html") !== false || stripos($accept, "*/*") !== false) {
+                $this->master();
+                $this->template();
+            }
         }
+
 
         ob_start();
         try {
@@ -190,6 +199,7 @@ class Page extends \R\Page
         $echo_content = ob_get_contents();
         ob_end_clean();
 
+        $content = "";
         //check template
         if ($template = $this->template) {
             if ($domain = $this->getTextDomain()) {
@@ -205,12 +215,12 @@ class Page extends \R\Page
             }
             try {
                 $content .= $template->render($this->data);
-            } catch (\Twig_Error_Runtime $e) {
+            } catch (\Twig\Error\RuntimeError $e) {
                 $content .= $e->getMessage();
             }
-            $response->setHeader("Content-Type", "text/html; charset=UTF-8");
+            $response = $response->withHeader("Content-Type", "text/html; charset=UTF-8");
         } else {
-            $content = (string)$response;
+            $content = $response->getBody()->getContents();
         }
 
         $content = $echo_content . $content;
@@ -221,7 +231,7 @@ class Page extends \R\Page
             $response = $response->withBody($stream);
         } else {
             if ($master = $this->master) {
-                $response->setHeader("Content-Type", "text/html; charset=UTF-8");
+                $response = $request->withHeader("Content-Type", "text/html; charset=UTF-8");
                 $master->data["content"] = $content;
                 $response = $master->__invoke($request, $response);
             } else {

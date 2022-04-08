@@ -1,8 +1,14 @@
-<?
+<?php
+
 namespace F;
 
 use R\Psr7\ServerRequest;
 use R\Psr7\Response;
+use Symfony\Bridge\Twig\Extension\TranslationExtension;
+use Symfony\Component\Translation\Translator;
+use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
+use Twig\TwigFunction;
 
 class App extends \R\App
 {
@@ -20,15 +26,15 @@ class App extends \R\App
         $this->language = $this->config["language"]["value"];
         $this->language_db_map = $this->config["language_db_map"];
         $this->language_locale_map = $this->config["language_locale_map"];
-        
+
         $uri = $this->request->getURI();
         $path = explode("/", $uri->getPath());
-        $path = array_values(array_filter($path, strlen));
+        $path = array_values(array_filter($path, "strlen"));
         if (in_array($path[0], $this->language)) {
             $this->current_language = array_shift($path);
             $uri = $uri->withPath("/" . implode("/", $path));
-            $basePath=$this->request->getUri()->getBasePath();
-            $uri=$uri->withBasepath($basePath);
+            $basePath = $this->request->getUri()->getBasePath();
+            $uri = $uri->withBasepath($basePath);
             $this->request = $this->request->withUri($uri);
         } else {
             $this->current_language = $this->language[0];
@@ -36,7 +42,7 @@ class App extends \R\App
 
         $path = explode("/", $this->request->getURI()->getPath());
 
-                //get country
+        //get country
         foreach ($this->language as $lang) {
             $s = explode("-", $lang, 2);
             if ($country = $s[1]) {
@@ -80,12 +86,14 @@ class App extends \R\App
                 $o = str_replace("{root}", $root, $o);
             });
 
-            $twig["loader"] = new \Twig_Loader_Filesystem($root);
-            $twig["environment"] = new \Twig_Environment($twig["loader"], $config);
-            $twig["environment"]->addExtension(new \Twig_Extensions_Extension_I18n());
-            $twig["environment"]->addGlobal("lang", $this->current_language);
+            $twig["loader"] = new FilesystemLoader($root);;
+            $twig["environment"] = $env = new Environment($twig["loader"], $config);
 
-            $function = new \Twig_SimpleFunction('_', function ($a, $b) {
+            $extension = new TranslationExtension(new Translator("en"));
+            $env->addExtension($extension);
+            $env->addGlobal("lang", $this->current_language);
+
+            $function = new TwigFunction('_', function ($a, $b) {
                 $name = $b . "_" . $this->v();
                 if (is_object($a)) {
                     return $a->$name;
@@ -97,7 +105,7 @@ class App extends \R\App
             $twig["environment"]->addFunction($function);
 
             $uri = substr($template_file, strlen($root) + 1);
-            return $twig["environment"]->loadTemplate($uri);
+            return $twig["environment"]->load($uri);
         }
     }
 
@@ -166,7 +174,7 @@ class App extends \R\App
             header("location: /{$lang}/{$url}");
         }
 
-        exit(); 
+        exit();
     }
 
     public function twig($file)
@@ -190,12 +198,15 @@ class App extends \R\App
                 $o = str_replace("{root}", $root, $o);
             });
 
-            $twig["loader"] = new \Twig_Loader_Filesystem($root);
-            $twig["environment"] = new \Twig_Environment($twig["loader"], $config);
-            $twig["environment"]->addExtension(new \Twig_Extensions_Extension_I18n());
+            $twig["loader"] = new FilesystemLoader($root);;
+            $twig["environment"] = $env = new Environment($twig["loader"], $config);
+
+            $extension = new TranslationExtension(new Translator("en"));
+            $env->addExtension($extension);
+            $env->addGlobal("lang", $this->current_language);
 
 
-            return $twig["environment"]->loadTemplate($template_file);
+            return $twig["environment"]->load($template_file);
         }
     }
 }

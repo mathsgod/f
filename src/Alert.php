@@ -1,4 +1,5 @@
-<?
+<?php
+
 namespace F;
 
 class Alert extends \ArrayObject
@@ -33,6 +34,5 @@ class Alert extends \ArrayObject
             "type" => "warning",
             "message" => $message
         ]);
-
     }
 }
