@@ -231,7 +231,7 @@ class Page extends \R\Page
             $response = $response->withBody($stream);
         } else {
             if ($master = $this->master) {
-                $response = $request->withHeader("Content-Type", "text/html; charset=UTF-8");
+                $response = $response->withHeader("Content-Type", "text/html; charset=UTF-8");
                 $master->data["content"] = $content;
                 $response = $master->__invoke($request, $response);
             } else {
